@@ -28,4 +28,14 @@ def run_backtest(data: pd.DataFrame, signal_column: str):
     })
     print(trades)
 
+    decimals_of_accuracy = 2
+
+    strategy_return = 100 * ((1 + trades["Return"]).prod() - 1)
+    strategy_return = strategy_return.round(decimals_of_accuracy)
+    buy_and_hold_return = 100 * (data["Close"].iloc[-1] / data["Close"].iloc[0] - 1)
+    buy_and_hold_return = buy_and_hold_return.round(decimals_of_accuracy)
+    print(f"Return using strategy: {strategy_return}%")
+    print(f"Return using buy and hold: {buy_and_hold_return}%")
+
+
     
