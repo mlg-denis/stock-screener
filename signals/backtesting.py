@@ -7,12 +7,12 @@ def run_backtest(data: pd.DataFrame, signal_column: str):
 
     buydates = data.index[bullish]
     selldates = data.index[bearish]
-    selldates = selldates[selldates > buydates[0]] # first sell happens after a buy
-    buydates = buydates[buydates < selldates[-1]] # last buy happens before a sell
     n = min(len(buydates), len(selldates))
     if (n == 0):
         print ("No trades found")
         return
+    selldates = selldates[selldates > buydates[0]] # first sell happens after a buy
+    buydates = buydates[buydates < selldates[-1]] # last buy happens before a sell
     buydates, selldates = buydates[:n], selldates[:n] # truncate to ensure pairings - redundant when using crossovers because they will be off by at most 1
 
     # drop the old date index to align by order instead of date label
