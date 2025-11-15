@@ -11,6 +11,18 @@ def handle(ticker, period, interval):
         assert period == "1d" or period == "5d" or period == "1mo", f"Cannot display {interval} interval on periods larger than 1mo."
     
     data = fi.fetch(ticker, period, interval)
+
+    indicators = indicator_checkboxes()
+    for name, enabled in indicators.items():
+        if not enabled:
+            continue
+        if "SMA" in name:
+            window = int(name[3:])
+            data[name] = indct.compute_sma(data["Close"], window)
+        elif "EMA" in name:
+            span = int(name[3:])
+            data[name] = indct.compute_ema(data["Close"], span)
+
     ema12 = indct.compute_ema(data["Close"],12)
     ema26 = indct.compute_ema(data["Close"],26)
     fig = get_fig(data, ticker, ema12, "EMA12", ema26, "EMA26", True)
@@ -20,15 +32,22 @@ def load_css(filename: str):
     with open(filename) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
+def indicator_checkboxes():
+    st.sidebar.header("Technical indicators")
+
+    indicators = {
+        "SMA20": st.sidebar.checkbox("SMA20"),
+        "SMA50": st.sidebar.checkbox("SMA50"),
+        "EMA12": st.sidebar.checkbox("EMA12"),
+        "EMA26": st.sidebar.checkbox("EMA26"),
+    }
+    return indicators
+
 def main():
     st.set_page_config(layout="wide")
     st.title("Dashboard")
 
-    st.sidebar.header("Technical indicators")
-    sma20 = st.sidebar.checkbox("SMA 20")
-    sma50 = st.sidebar.checkbox("SMA 50")
-    ema12 = st.sidebar.checkbox("EMA 12")
-    ema26 = st.sidebar.checkbox("EMA 26")
+    #add_checkboxes()
 
     with st.container():
         index = "sp500"

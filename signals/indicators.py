@@ -1,10 +1,10 @@
 import pandas as pd
 
-def compute_sma(series: pd.Series, window: int) -> pd.Series:
-    return series.rolling(window).mean()
+def compute_sma(closes: pd.Series, window: int) -> pd.Series:
+    return closes.rolling(window).mean()
 
-def compute_ema(series: pd.Series, span: int) -> pd.Series:
-    return series.ewm(span = span, adjust = False).mean()
+def compute_ema(closes: pd.Series, span: int) -> pd.Series:
+    return closes.ewm(span = span, adjust = False).mean()
 
 # crossover logic - check for each day whether short_avg > long_avg
 # then to detect a crossover, check if this is different to the previous day 
