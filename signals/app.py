@@ -16,6 +16,10 @@ def handle(ticker, period, interval):
     fig = get_fig(data, ticker, ema12, "EMA12", ema26, "EMA26", True)
     st.pyplot(fig)
 
+def load_css(filename: str):
+    with open(filename) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
 def main():
     st.set_page_config(layout="wide")
 
@@ -46,11 +50,7 @@ def main():
 
     st.divider()
 
-    st.markdown("""
-    <style>
-    .block-container {max-width: 1100px; padding-left: 2rem; padding-right: 2rem;}
-    </style>
-    """, unsafe_allow_html=True)    
+    load_css("style.css")   
 
     if ticker:
         handle(ticker, period, interval)        
