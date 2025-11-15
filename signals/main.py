@@ -1,12 +1,12 @@
-import financeinfo
+import financeinfo as fi
 import indicators as indc
-import plot as p
-import backtesting
+import plotter as p
+import backtesting as bt
 
 def main():
-    ticker = "TSLA"
-    info = financeinfo.fetch(ticker)
-    closes = info["Close"]
+    ticker = "AAPL"
+    data = fi.fetch(ticker)
+    closes = data["Close"]
 
     sma20 = indc.compute_sma(closes, 20)
     sma50 = indc.compute_sma(closes, 50)
@@ -14,17 +14,9 @@ def main():
     ema26 = indc.compute_ema(closes, 26)
    
     column = "Crossover"
-    info[column] = indc.detect_crossovers(sma20, sma50)
+    data[column] = indc.detect_crossovers(sma20, sma50)
 
-    backtesting.run_backtest(info, column)
-
-    p.init()
-    p.plot_series(closes, "Price", "-", 0.7)
-    p.plot_series(ema12, "EMA12", "--", 0.35)
-    p.plot_series(ema26, "EMA26", "--", 0.35)
-    p.plot_crossovers(info, column)
-    p.title(ticker)
-    p.show()
+    bt.run_backtest(data, column)
 
 if __name__ == "__main__":
     main()

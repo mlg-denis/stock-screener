@@ -27,6 +27,14 @@ def plot_crossovers(data: pd.DataFrame, column: str):
         marker = "v", color = "red", s = signal_size, label = "Bearish Crossover"
     )
 
+def get_fig(data, ticker):
+    fig, ax = plt.subplots(figsize = (10,5))
+    ax.plot(data["Close"])
+    ax.set_title(ticker)
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Price, USD")
+    return fig
+
 def title(title):
     plt.title(title)
 

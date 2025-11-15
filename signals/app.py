@@ -1,12 +1,18 @@
 import streamlit as st
-import matplotlib.pyplot as plt
-import yfinance as yf
+from financeinfo import fetch
+from backtesting import run_backtest
+from plotter import get_fig
 
-ticker = st.selectbox("Ticker", ["AAPL", "TSLA", "NVDA"])
+def main():
+    tickers = ["AAPL", "NVDA", "TSLA"]
+    ticker = st.selectbox("Select a ticker",
+                        tickers,
+                        index=None)
 
-data = yf.download(ticker, period="1y", interval="1d", progress=False)
+    if ticker:
+        data = fetch(ticker)
+        fig = get_fig(data,ticker)
+        st.pyplot(fig)
 
-fig, ax = plt.subplots(figsize = (10,5))
-ax.plot(data["Close"])
-ax.set_title(ticker)
-st.pyplot(fig)
+if __name__ == "__main__":
+    main()    
