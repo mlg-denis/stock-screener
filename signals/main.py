@@ -1,6 +1,7 @@
 import data
 import indicators
 import plot
+import backtesting
 
 def main():
     ticker = "TSLA"
@@ -14,6 +15,8 @@ def main():
    
     column = "Crossover"
     info[column] = indicators.detect_crossovers(sma20, sma50)
+
+    backtesting.run_backtest(info, column)
 
     plot.init()
     plot.plot_series(closes, "Price", "-", 0.7)
