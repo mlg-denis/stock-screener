@@ -64,7 +64,7 @@ def get_fig(data: pd.DataFrame, ticker: str,
     plot_crossovers(data, indicators, main_ax)
 
     main_ax.set_title(ticker)
-    main_ax.set_xlabel("Date")
+    axes[-1].set_xlabel("Date") # so it's at the very bottom
     main_ax.set_ylabel("Price, USD")
     main_ax.legend()
     return fig
