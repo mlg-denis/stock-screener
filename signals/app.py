@@ -18,7 +18,7 @@ def handle(ticker, period, interval):
     for label, enabled in indicator_checkboxes().items():
         if not enabled:
             continue
-        indicators[label] = INDICATORS[label](data)
+        indicators[label] = INDICATORS[label]["fn"](data) # get the pd.Series for the indicator
 
     # flatten potential dictionaries, e.g. MACD
     flattened = {}

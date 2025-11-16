@@ -1,18 +1,40 @@
 import indicators.compute as indct
+from enum import Enum
 
-# map the indicator names with the corresponding function
+class IndicatorType(str, Enum):
+    OVERLAY = "overlay"
+    OSCILLATOR = "oscillator"
+
+# map the indicator names to their corresponding functions and type
+# overlay can be plotted on the graph normally
+# oscillator needs a subplot
 INDICATORS = {
-    "SMA20": lambda data: indct.compute_sma(data["Close"], 20),
-    "SMA50": lambda data: indct.compute_sma(data["Close"], 50),
-    "EMA12": lambda data: indct.compute_ema(data["Close"], 12),
-    "EMA26": lambda data: indct.compute_ema(data["Close"], 26),
-    "MACD" : lambda data: indct.compute_macd(data["Close"]),
+    "SMA20": {
+        "fn": lambda d: indct.compute_sma(d["Close"], 20),
+        "type": IndicatorType.OVERLAY
+    },
+    "SMA50": {
+        "fn": lambda d: indct.compute_sma(d["Close"], 50),
+        "type": IndicatorType.OVERLAY
+    },
+    "EMA9": {
+        "fn": lambda d: indct.compute_ema(d["Close"], 9),
+        "type": IndicatorType.OVERLAY
+    },
+    "EMA21": {
+        "fn": lambda d: indct.compute_ema(d["Close"], 21),
+        "type": IndicatorType.OVERLAY
+    },
+    "MACD": {
+        "fn": lambda d: indct.compute_macd(d["Close"]),
+        "type": IndicatorType.OSCILLATOR
+    },
 }
 
 # indicators where crossovers are meaningful
 CROSSOVER_PAIRS = [
     ("SMA20", "SMA50"),
-    ("EMA12", "EMA26"),
+    ("EMA9", "EMA21"),
     ("MACD", "Signal") # internal
 ]
 

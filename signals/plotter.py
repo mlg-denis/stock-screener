@@ -3,16 +3,6 @@ import pandas as pd
 from indicators.compute import detect_crossovers
 from definitions import CROSSOVER_PAIRS
 
-signal_size = 100
-
-def init():
-    plt.figure(figsize= (10,5))
-    plt.xlabel("Date")
-    plt.ylabel("Price")
-
-def plot_series(series: pd.Series, label: str, style: str = "-", alpha: float = 1):
-    plt.plot(series, style, label = label, alpha = alpha)
-
 # calculates any crossovers that need to be calculated based on the given indicators
 # plots any necessary crossover markers on the price line
 def plot_crossovers(data, indicators, ax):
@@ -46,7 +36,7 @@ def get_fig(data: pd.DataFrame, ticker: str,
         assert label, "You must supply a label with an indicator."
         ax.plot(indicator, label=label, linestyle = "--", alpha = 0.35)     
 
-    plot_crossovers(data, indicators,ax)
+    plot_crossovers(data, indicators, ax)
 
     ax.set_title(ticker)
     ax.set_xlabel("Date")
