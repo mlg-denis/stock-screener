@@ -34,9 +34,11 @@ def handle(ticker, period, interval, indicator_states):
 
 
     # only plot those indicators that have their checkboxes enabled
-    active_indicators = {label: INDICATORS[label] for label, enabled in indicator_states.items() if enabled}  
-
-    fig = get_fig(data, ticker, active_indicators)
+    enabled_indicators = {label: INDICATORS[label] for label, enabled in indicator_states.items() if enabled}
+    
+    run_backtest(data, enabled_indicators)
+    
+    fig = get_fig(data, ticker, enabled_indicators)
     st.pyplot(fig)
 
 def load_css(filename: str):
