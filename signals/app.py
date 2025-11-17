@@ -20,10 +20,18 @@ def handle(ticker, period, interval, indicator_states):
     
     ticker = ticker.upper() # for display purposes
 
-    data = fi.fetch(ticker, period.lower(), interval) # rectify difference between display case and parameter case ("Max" vs "max")
-    if data.empty:
-        st.warning(f"No price data found, symbol {ticker} may be delisted")
+    try:
+        data = fi.fetch(ticker, period.lower(), interval) # rectify difference between display case and parameter case ("Max" vs "max")
+        if data.empty:
+            st.warning(f"No price data found, symbol {ticker} may be delisted")
+            return
+    except RuntimeError as e:
+        st.error(f"Failed to fetch data for {ticker} - is Yahoo Finance down?")
         return
+    except Exception as e:
+        st.error(f"Unexpected error while fetching {ticker} data: {e}")
+        return
+
 
     # only plot those indicators that have their checkboxes enabled
     active_indicators = {label: INDICATORS[label] for label, enabled in indicator_states.items() if enabled}  
