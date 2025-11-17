@@ -84,7 +84,11 @@ def get_fig(data: pd.DataFrame, ticker: str,
 
     plot_crossovers(data, indicators, axes, overlays, oscillators)
 
+    # deduplicate any repeated 'Bullish/Bearish Crossovers' on main ax legend
+    handles, labels = main_ax.get_legend_handles_labels()
+    unique_labels = dict(zip(labels,handles))
+    main_ax.legend(unique_labels.values(), unique_labels.keys())
+
     main_ax.set_title(ticker)
     main_ax.set_ylabel("Price, USD")
-    main_ax.legend()
     return fig
