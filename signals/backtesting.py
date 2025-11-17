@@ -24,7 +24,9 @@ def run_backtest(data: pd.DataFrame,
         if short in enabled_indicators and long in enabled_indicators:
             s_series = enabled_indicators[short]["fn"](data)
             l_series = enabled_indicators[long]["fn"](data)
+
             crossovers: pd.Series = detect_crossovers(s_series, l_series)
+            crossovers = crossovers.shift(1).fillna(0) # once a signal is detected at an interval, trades can only happen at the next interval, so shift by 1 and replace NaNs with 0
 
             buydates.extend(crossovers.index[crossovers == 1])
             selldates.extend(crossovers.index[crossovers == -1])
