@@ -56,7 +56,7 @@ def get_fig(data: pd.DataFrame, ticker: str,
             indicators: dict[str, dict[str, pd.Series | pd.DataFrame | str]]):
     
     overlays = {}
-    oscillators: dict[str, dict[str, pd.Series | pd.DataFrame | str]] = {}
+    oscillators = {}
     for label, indicator in indicators.items():
         assert label, "You must supply a label with an indicator."
         match indicator["type"]:
@@ -74,11 +74,15 @@ def get_fig(data: pd.DataFrame, ticker: str,
     main_ax = axes[0]
     main_ax.plot(data["Close"], label= "Price", color="blue") # axes[0] is the main ax
     for label, indicator in overlays.items():
-        main_ax.plot(indicator["fn"](data), label=label, linestyle="--", alpha=0.35)
+        result = indicator["fn"](data)
+        if isinstance(result, pd.DataFrame):
+            for col in result.columns:
+                main_ax.plot(result[col], label=col, linestyle="--", alpha = 0.35)
+        elif isinstance(result, pd.Series):        
+            main_ax.plot(indicator["fn"](data), label=label, linestyle="--", alpha=0.35)
 
     main_ax.legend()
 
-    # oscillator: dict[str, series | df | str]
     oscillator_axes = axes[1:]
     for ax, (label, oscillator) in zip(oscillator_axes, oscillators.items()):
         result = oscillator["fn"](data)
