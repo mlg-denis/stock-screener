@@ -2,7 +2,7 @@ import streamlit as st
 import financeinfo as fi
 from backtesting import run_backtest
 from plotter import get_fig
-import indicators.compute as indct
+import matplotlib.pyplot as plt
 from definitions import INDICATORS, VALID_INTERVALS
 
 def validate_inputs(ticker: str, period: str, interval: str) -> str | None:
@@ -51,6 +51,7 @@ def handle(ticker, period, interval, indicator_states):
     
     fig = get_fig(data, ticker, enabled_indicators)
     st.pyplot(fig)
+    plt.close(fig)
 
     if st.button("Run backtest with selection"):
         backtest(data, enabled_indicators)
