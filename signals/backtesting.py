@@ -20,18 +20,19 @@ def run_backtest(data: pd.DataFrame,
         return pd.DataFrame(), 0.0, buy_and_hold_return
 
     buydates, selldates = [], []
-    for fast, slow in CROSSOVER_PAIRS:
+    for parent, fast, slow in CROSSOVER_PAIRS:
         if fast in enabled_indicators and slow in enabled_indicators: # overlay type
             f_series = enabled_indicators[fast]["fn"](data)
             s_series = enabled_indicators[slow]["fn"](data)
 
-        # IMPORTANT: this assumes that the slow line is always derived from the fast line - is this ever not the case?
-        elif fast in enabled_indicators:
-            result: pd.DataFrame = enabled_indicators[fast]["fn"](data)
+        # slow line is always derived from fast line, not vice versa
+        elif parent in enabled_indicators:
+            result = enabled_indicators[parent]["fn"](data)
             f_series = result[fast]
             s_series = result[slow]
-        else: continue    
-
+        else:
+            continue
+        
         crossovers: pd.Series = detect_crossovers(f_series, s_series)
         crossovers = crossovers.shift(1).fillna(0) # once a signal is detected at an interval, trades can only happen at the next interval, so shift by 1 and replace NaNs with 0
 

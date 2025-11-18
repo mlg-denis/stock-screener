@@ -74,4 +74,4 @@ def compute_obv(close: pd.Series, volume: pd.Series) -> pd.Series:
 # then to detect a crossover, check if this is different to the previous day 
 def detect_crossovers(fast: pd.Series, slow: pd.Series) -> pd.Series:
     signal = (fast > slow).astype(int) # 1 if true; 0 if false
-    return signal.diff() # return the crossovers
+    return signal.diff().fillna(0) # return the crossovers

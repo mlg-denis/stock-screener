@@ -51,7 +51,7 @@ INDICATORS = {
     },
 }
 
-# indicators where crossovers are meaningful
+# indicators where crossovers are meaningful (ax_name, fast, slow)
 CROSSOVER_PAIRS = [
     ("MAIN","SMA20", "SMA50"),
     ("MAIN","EMA9", "EMA21"),
