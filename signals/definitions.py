@@ -29,13 +29,34 @@ INDICATORS = {
         "fn": lambda d: indct.compute_macd(d["Close"]),
         "type": IndicatorType.OSCILLATOR
     },
+    "RSI": {
+        "fn": lambda d: indct.compute_rsi(d["Close"], 14),
+        "type": IndicatorType.OSCILLATOR
+    },
+    "STOCHASTIC": {
+        "fn": lambda d: indct.compute_stochastic(d["High"], d["Low"], d["Close"], k_period=14, d_period=3),
+        "type": IndicatorType.OSCILLATOR
+    },
+    "ATR": {
+        "fn": lambda d: indct.compute_atr(d["High"], d["Low"], d["Close"], 14),
+        "type": IndicatorType.OSCILLATOR
+    },
+    "BOLLINGER BANDS": {
+        "fn": lambda d: indct.compute_bbands(d["Close"], period=20, num_std=2),
+        "type": IndicatorType.OVERLAY
+    },
+    "OBV": {
+        "fn": lambda d: indct.compute_obv(d["Close"], d["Volume"]),
+        "type": IndicatorType.OSCILLATOR
+    },
 }
 
 # indicators where crossovers are meaningful
 CROSSOVER_PAIRS = [
-    ("SMA20", "SMA50"),
-    ("EMA9", "EMA21"),
-    ("MACD", "Signal") # internal
+    ("MAIN","SMA20", "SMA50"),
+    ("MAIN","EMA9", "EMA21"),
+    ("MACD","MACD", "Signal"),
+    ("STOCHASTIC","STOCH_%K", "STOCH_%D")
 ]
 
 VALID_INTERVALS = {

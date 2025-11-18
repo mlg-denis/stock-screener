@@ -21,26 +21,24 @@ def plot_crossovers(data, indicators, axes, overlays, oscillators):
 
     flattened = flatten_indicators(indicators, data) # turn any pd.DataFrames into pd.Series
   
-    for fast, slow in CROSSOVER_PAIRS:
+    for ax_name, fast, slow in CROSSOVER_PAIRS:
         if fast in flattened and slow in flattened:
             crossovers = detect_crossovers(flattened[fast],flattened[slow])
         
-            size = 7.5
-
-            if fast in overlays or slow in overlays:
+            ax = None
+            if ax_name == "MAIN":
                 ax = axes[0]  # main price ax
                 y = data["Close"]
-            else:
+            elif ax_name in oscillators:
                 # find oscillator ax that matches one of the names
-                for a, label in zip(axes[1:], oscillators.keys()):
-                    if label == fast or label == slow: # label is in the current crossover pair
-                        ax = a
-                        break
+                id = list(oscillators.keys()).index(ax_name)
+                ax = axes[id + 1] # skip main ax
                 y = flattened[fast]
 
-            if not ax:
+            if ax is None:
                 raise ValueError(f"No matching ax found for crossover pair ({fast}, {slow})")    
             
+            size = 7.5
             ax.plot(
                 flattened[fast].index[crossovers == 1],
                 y[crossovers == 1],
@@ -82,10 +80,15 @@ def get_fig(data: pd.DataFrame, ticker: str,
 
     # oscillator: dict[str, series | df | str]
     oscillator_axes = axes[1:]
-    for ax, oscillator in zip(oscillator_axes, oscillators.values()):
-        df = oscillator["fn"](data)
-        for col in df.columns:
-            ax.plot(df[col], label=f"{col}")
+    for ax, (label, oscillator) in zip(oscillator_axes, oscillators.items()):
+        result = oscillator["fn"](data)
+        # result could be either a Series or DataFrame depending on which oscillator is enabled
+        if isinstance(result, pd.DataFrame):
+            for col in result.columns:
+                ax.plot(result[col], label=f"{col}")
+        elif isinstance(result, pd.Series):
+            ax.plot(result, label=label)
+        ax.legend()    
 
     plot_crossovers(data, indicators, axes, overlays, oscillators)
 
